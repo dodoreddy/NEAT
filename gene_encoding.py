@@ -40,7 +40,7 @@ class NodeGenome:
             raise StopIteration
 
         self.n = self.n + 1
-        return self.nodes[self.n - 1].num
+        return self.nodes[self.n - 1]
 
     def __len__(self):
         return len(self.nodes)
@@ -49,11 +49,17 @@ class NodeGenome:
         for i in self.nodes:
             print(str(i.num) + " is type " + i.typeNode)
 
-    def append(self, node):
-        self.nodes.append(node)
+
 
     def append(self, nodeNum, typeNode="hidden"):
+      if type(nodeNum) == int:
         self.nodes.append(Node(nodeNum, typeNode))
+      elif type(nodeNum) == Node:
+        node = nodeNum
+        self.nodes.append(node)
+      else:
+        raise Exception("Method not found")
+        
 
 
 
@@ -87,12 +93,7 @@ class NodeGenome:
         return_object.add(i[var])
       return return_object
         
-        
-
-
-
-
-
+      
     def __getitem__(self, index):
       for i in self.nodes:
         if i.num == index:
@@ -146,11 +147,14 @@ class ConnectionGenome:
         self.n = self.n + 1
         return self.connections[self.n - 1]
 
-    def append(self, connection):
-        self.connections.append(connection)
-
-    def append(self, input, output, weight, innov, enabled=True):
+    def append(self, input, output = None, weight = None, innov = None, enabled=True):
+      if not(output is None):
         self.connections.append(Connection(input, output, weight, innov, enabled=True))
+      elif output is None:
+        connection = input
+        self.connections.append(connection)
+      else:
+        raise Exception("Method not found")
 
     def output_connections(self):
         for i in self.connections:
@@ -203,7 +207,8 @@ class Genes(ConnectionGenome, NodeGenome):
 
 
   
-    def append(self, input, output, weight, innov, enabled=True):
+    def append(self, input, output = None, weight = None, innov = None, enabled=True):
+      if not(output is None):
         if not(input in self.iterate_nodes("num")):
           raise Exception("Input neuron must be an existing neuron")
         if not(output in self.iterate_nodes("num")):
@@ -235,11 +240,9 @@ class Genes(ConnectionGenome, NodeGenome):
         ConnectionGenome.append(self, input, output, weight,
                         innov, enabled=enabled)
 
-
-
-
   
-    def append(self, connection):
+      elif output is None:
+        connection = input
         if not(connection.input in self.iterate_nodes("num")):
           raise Exception("Input neuron must be an existing neuron")
         if not(connection.output in self.iterate_nodes("num")):
@@ -269,6 +272,10 @@ class Genes(ConnectionGenome, NodeGenome):
             raise Exception("created a cyclic graph")
 
         ConnectionGenome.append(self, connection)
+
+        
+      else:
+        raise Exception("Method not found")
     def iterate_nodes(self, var):
       return NodeGenome.iterate(self, var)
     def iterate_connections(self, var):
@@ -277,4 +284,10 @@ class Genes(ConnectionGenome, NodeGenome):
       return NodeGenome.__getitem__(self, index)
   
 
+    def add_node(self, nodeNum, typeNode = "hidden"):
+      for i in self.iterate_nodes("num"):
+        if i == nodeNum:
+          raise Exception("Node Exists")
+      NodeGenome.append(self, nodeNum, typeNode)
+        
       
