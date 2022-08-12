@@ -1,2 +1,5 @@
-/venv/
-.idea
+poetry.lock
+pyproject.toml
+replit.nix
+venv
+.replit
