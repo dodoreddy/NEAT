@@ -14,12 +14,12 @@ class Node:
         for i in index:
           try:
             return_tuple.append(getattr(self, i))
-          except:
+          except AttributeError:
             raise KeyError(f"{index} does not exist")
         return tuple(return_tuple)
       try:
         return getattr(self, index)
-      except:
+      except AttributeError:
         raise KeyError(f"{index} does not exist")
       
 
@@ -114,12 +114,12 @@ class Connection:
         for i in index:
           try:
             return_tuple.append(getattr(self, i))
-          except:
+          except AttributeError:
             raise KeyError(f"{index} does not exist")
         return tuple(return_tuple)
       try:
         return getattr(self, index)
-      except:
+      except AttributeError:
         raise KeyError(f"{index} does not exist")
 
 
