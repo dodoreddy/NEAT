@@ -1,5 +1,4 @@
 import networkx as nx
-from multipledispatch import dispatch
 
 
 class Node:
@@ -49,8 +48,6 @@ class NodeGenome:
         for i in self.nodes:
             print(str(i.num) + " is type " + i.typeNode)
 
-
-
     def append(self, nodeNum, typeNode="hidden"):
       if type(nodeNum) == int:
         self.nodes.append(Node(nodeNum, typeNode))
@@ -59,9 +56,6 @@ class NodeGenome:
         self.nodes.append(node)
       else:
         raise Exception("Method not found")
-        
-
-
 
     def iterate(self, var):
       class iterable_object:
@@ -92,13 +86,14 @@ class NodeGenome:
       for i in self.nodes:
         return_object.add(i[var])
       return return_object
-        
-      
+          
     def __getitem__(self, index):
       for i in self.nodes:
         if i.num == index:
           return i
       raise Exception("index not in list")
+
+
 
 class Connection:
     def __init__(self, input, output, weight, innov, enabled=True):
@@ -121,9 +116,6 @@ class Connection:
         return getattr(self, index)
       except AttributeError:
         raise KeyError(f"{index} does not exist")
-
-
-
 
 
 class ConnectionGenome:
@@ -184,22 +176,20 @@ class ConnectionGenome:
       for i in self.connections:
         return_object.add(i[var])
       return return_object
-        
-        
-
-
-
-
-
 
 
 
 
 
 class Genes(ConnectionGenome, NodeGenome):
-    def __init__(self, input, output):
+    def __init__(self, input, output, bias = True):
         self.g = nx.DiGraph()
-        NodeGenome.__init__(self, input, output)
+        
+        #adds bias
+        if bias:
+          input = input+1
+
+        NodeGenome.__init__(self, input+1, output)
         ConnectionGenome.__init__(self)
 
         for i, num in enumerate(self.nodes):
@@ -208,6 +198,7 @@ class Genes(ConnectionGenome, NodeGenome):
 
   
     def append(self, input, output = None, weight = None, innov = None, enabled=True):
+      
       if not(output is None):
         if not(input in self.iterate_nodes("num")):
           raise Exception("Input neuron must be an existing neuron")
@@ -276,10 +267,13 @@ class Genes(ConnectionGenome, NodeGenome):
         
       else:
         raise Exception("Method not found")
+    
     def iterate_nodes(self, var):
       return NodeGenome.iterate(self, var)
+    
     def iterate_connections(self, var):
       return ConnectionGenome.iterate(self, var)
+    
     def nodeList(self, index):
       return NodeGenome.__getitem__(self, index)
   
