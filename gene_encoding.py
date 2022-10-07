@@ -228,7 +228,7 @@ class Genes(ConnectionGenome, NodeGenome):
         if output_type == "input":
             raise Exception("output Neuron cant be an input neuron")
           
-        self.g.add_edge(input, output, innovationNumber=innov,
+        self.g.add_edge(self.nodeList(input), self.nodeList(output), innovationNumber=innov,
                         weight=weight, enabled=enabled)
 
         if not (nx.is_directed_acyclic_graph(self.g)):
