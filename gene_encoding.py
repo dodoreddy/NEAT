@@ -26,11 +26,14 @@ class Node:
 class NodeGenome:
     nodes = []
     def __init__(self, input, output, bias = False):
-      for i in range(0, input):
+
+      if bias:
+        self.nodes.append(Node(0, "input", bias))
+      
+      for i in range(1, input+1):
         self.nodes.append(Node(i, "input"))
       
-      if bias:
-        self.nodes.append(Node(i+1, "input", bias))
+
         
       for i in range(0, output):
         self.nodes.append(Node(len(self.nodes), "output"))

@@ -16,11 +16,11 @@ def calculate_network(genome, input, is0to1 = True, bottom = 0, top = 1):
   nx.set_node_attributes(graph, None, "out")
 
   for i, item in enumerate(input):
-      list(graph.nodes(data=True))[i][1]["out"] = item 
+      list(graph.nodes(data=True))[i+1][1]["out"] = item 
 
   
   if genome.bias:
-    list(graph.nodes(data=True))[i+1][1]["out"] = 1 
+    list(graph.nodes(data=True))[0][1]["out"] = 1 
 
   i = i+2
   output = []
@@ -29,7 +29,7 @@ def calculate_network(genome, input, is0to1 = True, bottom = 0, top = 1):
 
     try:
       current_type_node = list(graph.nodes(data=True))[i][1]["typeNode"]
-    except:# IndexError or KeyError:
+    except (KeyError, IndexError) as e:
       break
 
 
