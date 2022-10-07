@@ -1,15 +1,10 @@
 from gene_encoding import *
 from gene_encoding import Genes
-
+import calculate
 def main():
-    genes = Genes(3,4,bias = False)
-
-    genes.add_node(7)
-
-    gene.append(0,4,1,1)
-
-    genes.NodeGenome.output_nodes()
-
+  gene = Genes(3,3, True)
+  
+  calculate.calculate_network(gene, [5,6,4])
 
 
 

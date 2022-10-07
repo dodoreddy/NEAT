@@ -2,9 +2,10 @@ import networkx as nx
 
 
 class Node:
-    def __init__(self, num, typeNode="hidden"):
+    def __init__(self, num, typeNode="hidden", bias = False):
         self.typeNode = typeNode
         self.num = num
+        self.bias = bias
 
 
     def __getitem__(self, index):
@@ -24,9 +25,13 @@ class Node:
 
 class NodeGenome:
     nodes = []
-    def __init__(self, input, output):
+    def __init__(self, input, output, bias = False):
       for i in range(0, input):
         self.nodes.append(Node(i, "input"))
+      
+      if bias:
+        self.nodes.append(Node(i+1, "input", bias))
+        
       for i in range(0, output):
         self.nodes.append(Node(len(self.nodes), "output"))
 
@@ -46,7 +51,10 @@ class NodeGenome:
 
     def output_nodes(self):
         for i in self.nodes:
-            print(str(i.num) + " is type " + i.typeNode)
+          print(f"{str(i.num)} is type {i.typeNode}", end="")
+          if i.bias:
+            print(" and is bias", end="")
+          print("")          
 
     def append(self, nodeNum, typeNode="hidden"):
       if type(nodeNum) == int:
@@ -185,12 +193,11 @@ class Genes(ConnectionGenome, NodeGenome):
     def __init__(self, input, output, bias = True):
         self.g = nx.DiGraph()
         
-        #adds bias
-        if bias:
-          input = input+1
 
-        NodeGenome.__init__(self, input+1, output)
+        NodeGenome.__init__(self, input, output, bias)
         ConnectionGenome.__init__(self)
+
+        self.bias = bias
 
         for i, num in enumerate(self.nodes):
             self.g.add_node(num, typeNode=self.nodes[i].typeNode)
@@ -284,4 +291,3 @@ class Genes(ConnectionGenome, NodeGenome):
           raise Exception("Node Exists")
       NodeGenome.append(self, nodeNum, typeNode)
         
-      
