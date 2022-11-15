@@ -8,10 +8,8 @@ class Connection:
 
     #adds input connections to nodes
     self.end.append_in(self.start)
-
-    #addes output connection to nodes
+    #adds output connection to nodes
     self.start.append_out(self.end)
-
 
   def __eq__(self, other):
     
@@ -29,6 +27,7 @@ class Connection_genome(list):
     list.__init__([])  
 
   def __repr__(self):
+    
     out = ""
     for i in self:
       out = out+(i.__repr__()+"\n")
@@ -45,10 +44,13 @@ class Connection_genome(list):
     if type(item) == int:
       return list.__getitem__(self, item)
 
-    if type(item) == Connection:
-      for i, conn in enumerate(self):
-        if conn == item:
-          return i
+    if (type(item) == tuple) or (type(item) == item):
+      connects = [(x.start, x.end) for x in self]
+      item = tuple(item)
+      for i, connect in enumerate(connects):
+        if item == connect:
+          return self[i]
+          
           
     else:
       raise TypeError("Wrong type "+item)

@@ -1,3 +1,5 @@
+import math
+
 class Node:
   def __init__(self, number, type="hidden"):
     self.num = int(number)
@@ -5,6 +7,8 @@ class Node:
     
     self.in_connections = [] 
     self.out_connections = []
+
+    self.cache = None
 
   def __repr__(self):
     #Not s just calls __str__ instead of __format__ makes sure to print true not 1
@@ -30,6 +34,19 @@ class Node:
 
     return False
     
+  def calc(self, x):
+    def sigmoid(x):
+      return 1/(1+(math.exp(-x)))
+    
+    return sigmoid(x)
+  def extra_detail(self):
+    txt = f"im:- {self.num}\n"
+    in_conn  = f"Connections that point towards me:- {[x.num for x in self.in_connections]}\n"
+    out_conn = f"Connections that point away from me:- {[x.num for x in self.out_connections]}\n"
+    if not (self.cache is None): 
+      cache = f"Whats cached:- {self.cache}"
+      return txt+in_conn+out_conn+cache
+    return txt+in_conn+out_conn
 
 class Node_genome(list):
   def __init__(self, input, output):
@@ -76,4 +93,10 @@ class Node_genome(list):
       raise TypeError("Wrong type "+item)
       
       
-      
+  def reset(self):
+    for i in range(len(self)):
+      self[i].cache = None
+  def extra_details(self):
+    for i in self:
+      print(i.extra_detail())
+      print()
