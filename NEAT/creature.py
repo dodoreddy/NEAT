@@ -24,14 +24,16 @@ class Creature():
       else:
         x = 0
         for i in node.in_connections:
-          weight = self.connections[(i, node)].weight
-          x = x+ (calc_node(i) * weight)
+          connection = self.connections[(i, node)]
+          if connection.enabled:
+            x = x+ (calc_node(i) * connection.weight)
 
           
         x = node.calc(x)
         node.cache = x
         return x
 
+    
     
     out = []
     node = self.nodes[i]
@@ -41,8 +43,50 @@ class Creature():
       out.append(node.cache)
 
       i += 1
+      if i >= len(self.nodes):
+        break
       node = self.nodes[i]
 
     self.nodes.reset()
     return out
 
+
+  def new(self, connection):
+
+    if not (connection.start in self.nodes):
+      raise Exception("Input neuron must be an existing neuron")
+    if not (connection.end in self.nodes): 
+      raise Exception("Output neuron must be an existing neuron")
+    
+    if connection.start.type == "output":
+      raise Exception("Input Neuron cant be an output neuron")
+    if connection.end.type == "input":
+      raise Exception("Output Neuron cant be an Input neuron")
+
+    if connection in self.connections:
+      raise Exception("This connection already exists")
+    
+    self.connections.append(connection)
+
+    self.nodes.reset()
+
+
+    if (self.forms_loop(connection.start)):
+      raise Exception("This connection forms a loop")
+
+    self.nodes.reset()
+
+
+  def forms_loop(self, node):
+    if node.cache == True:
+      return True
+    node.cache = True
+    
+    for i in node.out_connections:
+      x = self.forms_loop(i)
+      if x == True:
+        return True
+    return False
+    
+    
+    

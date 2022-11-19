@@ -35,11 +35,12 @@ class Connection_genome(list):
     out = out[:-1]
     return out
   def append(self, connection):
-    if type(connection) == Connection:
-      list.append(self, connection)
-      
-    else:
+    if not (type(connection) == Connection):
       raise NotImplementedError(f"Wrong type '{connection}'")
+    
+    list.append(self, connection)
+  
+  
   def __getitem__(self, item):
     if type(item) == int:
       return list.__getitem__(self, item)
@@ -54,3 +55,6 @@ class Connection_genome(list):
           
     else:
       raise TypeError("Wrong type "+item)
+
+  def __contains__(self, item):
+    return (item.start, item.end) in [(i.start, i.end) for i in self]

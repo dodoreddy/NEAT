@@ -43,7 +43,7 @@ class Node:
     txt = f"im:- {self.num}\n"
     in_conn  = f"Connections that point towards me:- {[x.num for x in self.in_connections]}\n"
     out_conn = f"Connections that point away from me:- {[x.num for x in self.out_connections]}\n"
-    if not (self.cache is None): 
+    if not (self.cache is None):
       cache = f"Whats cached:- {self.cache}"
       return txt+in_conn+out_conn+cache
     return txt+in_conn+out_conn
@@ -69,8 +69,14 @@ class Node_genome(list):
     out = out[:-1]
     return out
 
-  def append(self, node):
+  def append(self, node = None):
+    if node is None:
+      node = Node(len(self))
+      
     if type(node) == Node:
+      if node in self:
+        
+        raise AttributeError(f"node is already in genome")
       list.append(self, node)
       
     else:
@@ -100,3 +106,5 @@ class Node_genome(list):
     for i in self:
       print(i.extra_detail())
       print()
+  def __contains__(self, item):
+    return item.num in [i.num for i in self]
